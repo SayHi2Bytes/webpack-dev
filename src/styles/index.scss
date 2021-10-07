@@ -1,0 +1,15 @@
+@use 'helper';
+
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: greenyellow;
+  font-size: 2rem;
+}
+
+p {
+  background-image: url('../images/thought-catalog.jpg');
+  background-size: cover;
+  background-position: top;
+  min-width: 100%;
+}
