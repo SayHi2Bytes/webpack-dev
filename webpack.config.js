@@ -1,12 +1,22 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const htmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const plugins = [
-  new MiniCssExtractPlugin(),
-  new htmlWebpackPlugin({
+  new MiniCssExtractPlugin({
+    filename: 'main.css',
+    chunkFilename: 'main.css',
+  }),
+  new HtmlWebpackPlugin({
     template: './src/index.html',
+    inject: true,
+    filename: 'index.html',
+  }),
+  new HtmlWebpackPlugin({
+    template: './src/blog.html',
+    inject: false,
+    filename: 'blog.html',
   }),
 ];
 
@@ -35,10 +45,14 @@ module.exports = (env, argv) => {
 
   return {
     mode: mode,
-    entry: ['./src/index.js'],
+    entry: {
+      app: './src/app.js',
+    },
 
     output: {
+      filename: '[name].[contenthash].bundle.js',
       path: path.resolve(__dirname, 'dist'),
+
       clean: true,
       assetModuleFilename: 'images/[hash][ext][query]',
     },
@@ -47,7 +61,35 @@ module.exports = (env, argv) => {
       rules: [
         {
           test: /\.html$/i,
-          loader: 'html-loader',
+          use: [
+            {
+              loader: 'html-loader',
+              options: {
+                // Disables attributes processing
+                sources: {
+                  list: [
+                    '...',
+                    {
+                      tag: 'img',
+                      attribute: 'data-src',
+                      type: 'src',
+                    },
+                    {
+                      tag: 'img',
+                      attribute: 'data-srcset',
+                      type: 'srcset',
+                    },
+                    {
+                      tag: 'link',
+                      attribute: 'href',
+                      type: 'src',
+                      filter: () => false,
+                    },
+                  ],
+                },
+              },
+            },
+          ],
         },
         {
           test: /\.(png|jpe?g|gif|svg)$/i,

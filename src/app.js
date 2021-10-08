@@ -1,5 +1,5 @@
 import { render } from 'react-dom';
 import App from './components/App';
-import html from './index.html';
+import './styles/main.scss';
 
 render(<App />, document.getElementById('root'));
